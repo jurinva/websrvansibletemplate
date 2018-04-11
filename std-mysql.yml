@@ -4,7 +4,7 @@
   - name: Confirm MySQL root password before installing
     debconf: name='mysql-server' question='mysql-server/root_password_again' value='{{mysql_root_pass | quote}}' vtype='password'
     become: true
-  - name: Install nginx
+  - name: Install MySQL
     apt: name={{item}} state=installed
     with_items:
       - mysql-server

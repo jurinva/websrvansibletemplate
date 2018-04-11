@@ -9,31 +9,13 @@
 
   - include: "{{ item }}"
     with_items:
-#      - std-createlogdir.yml
-#      - std-backup.yml
+      - std-logdir.yml
+      - std-backup.yml
       - std-letsencrypt.yml
-#      - std-monit.yml
-#      - std-mysql.yml
-#      - std-nginx.yml
-#      - std-pkgs.yml
-#      - std-ppaphp.yml
-#      - std-users.yml
+      - std-monit.yml
+      - std-mysql.yml
+      - std-nginx.yml
+      - std-pkgs.yml
+      - std-ppaphp.yml
+      - std-users.yml
 
-#  - name: config PHP
-#    action: ini_file dest=/etc/php/5.6/fpm/php.ini section=PHP option=max_execution_time value='1800'
-#    sudo: yes
-#  - name: config PHP
-#    action: ini_file dest=/etc/php/5.6/fpm/php.ini section=PHP option=max_input_time value='1800'
-#    sudo: yes
-#  - name: config PHP
-#    action: ini_file dest=/etc/php/5.6/fpm/php.ini section=PHP option=memory_limit value='1024M'
-#    sudo: yes
-#  - name: config PHP
-#    action: ini_file dest=/etc/php/5.6/fpm/php.ini section=PHP option=post_max_size value='100M'
-#    sudo: yes
-#  - name: config PHP
-#    action: ini_file dest=/etc/php/5.6/fpm/php.ini section=PHP option=upload_max_filesize value='100M'
-#    sudo: yes
-
-
-  
