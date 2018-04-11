@@ -1,0 +1,3 @@
+  - name: Create log dir
+    file: path={{siterootdir | quote}}/log state=directory mode=0775
+    become: true

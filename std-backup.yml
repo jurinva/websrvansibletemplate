@@ -1,0 +1,13 @@
+  - name: Create backup dir
+    file: path={{siterootdir | quote}}/{{item}} state=directory mode=0775
+    with_items:
+      - backup
+      - backup/conf
+      - backup/mysql
+    become: true
+  - name: Copy backup script to server
+    get_url: url=https://github.com/jurinva/webserverbackup/raw/master/webserverbackup.sh dest={{siterootdir | quote}}/ mode=a+x
+    become: true
+  - name: Create backup cron.d task
+    - cron: name=backup minute=0 hour=0 user=root job="{{siterootdir | quote}}/backup/backup.sh" cron_file=backup
+    become: true

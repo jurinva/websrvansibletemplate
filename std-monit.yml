@@ -1,0 +1,161 @@
+  - name: install monit
+    apt: name=monit state=installed
+    when: ansible_distribution == 'Ubuntu'
+    become: true
+  - name: install monit
+    yum: name=monit state=installed
+    when: ansible_distribution == 'CentOS'
+    become: true
+
+  - block:
+    - name: Remove monit configuration CentOS
+      file: state=absent path=/etc/monit.d/{{item}}
+      with_items:
+        - mysql
+        - nginx
+        - php5
+      when: ansible_distribution == 'CentOS'
+      become: true
+    - name: ensure file exists CentOS
+      copy: content="" dest=/etc/monit.d/{{item}} force=no group=root owner=root mode=0644
+      with_items:
+        - mysql
+        - nginx
+        - php5
+      when: ansible_distribution == 'CentOS'
+      become: true
+    - name: Configure mysql monit CentOS
+      blockinfile:
+        dest=/etc/monit.d/mysql
+        content='check process mysqld with pidfile /var/run/mysqld/mysqld.pid\n
+                   \tstart program = "/usr/sbin/service mysql start" with timeout 10 seconds\n
+                   \tstop program  = "/usr/sbin/service mysql stop"\n
+                   \tif failed unixsocket /var/lib/mysql/mysql.sock then restart'
+        marker=''
+      when: ansible_distribution == 'CentOS'
+      become: true
+    - name: Configure Nginx monit CentOS
+      blockinfile:
+        dest=/etc/monit.d/nginx
+        content='check process nginx with pidfile /var/run/nginx.pid\n
+                       \tstart program = "/usr/sbin/service nginx start" with timeout 10 seconds\n
+                       \tstop program  = "/usr/sbin/service nginx stop"\n'
+        marker=''
+      when: ansible_distribution == 'CentOS'
+      become: true
+    - name: Configure php5.X-fpm monit CentOS
+      blockinfile:
+        dest=/etc/monit.d/php5
+        content='check process php-fpm with pidfile /var/run/php/php-fpm.pid\n
+                   \tstart program = "/usr/sbin/service php-fpm start" with timeout 10 seconds\n
+                   \tstop program  = "/usr/sbin/service php-fpm stop"\n
+                   \tif failed unixsocket /var/run/php/php-fpm.sock then restart'
+        marker=''
+      become: true
+      when: ansible_distribution == 'CentOS'
+
+  - block:
+    - name: Remove monit configuration Ubuntu 14.04
+      file: state=absent path=/etc/monit/monitrc.d/{{item}}
+      with_items:
+        - php5
+      when: ansible_distribution == 'Ubuntu' and ansible_distribution_version == '14.04'
+      become: true
+    - name: ensure file exists Ubuntu 14.04
+      copy: content="" dest=/etc/monit/monitrc.d/{{item}} force=no group=root owner=root mode=0644
+      with_items:
+        - php5
+      when: ansible_distribution == 'Ubuntu' and ansible_distribution_version == '14.04'
+      become: true
+    - name: Configure php5.X-fpm monit Ubuntu 14.04
+      blockinfile:
+        dest=/etc/monit/monitrc.d/php5
+        content='check process php5-fpm with pidfile /run/php/php5-fpm.pid\n
+                   \tstart program = "/usr/sbin/service php5-fpm start" with timeout 10 seconds\n
+                   \tstop program  = "/usr/sbin/service php5-fpm stop"\n
+                   \tif failed unixsocket /run/php/php5-fpm.sock then restart'
+        marker=''
+      become: true
+      when: ansible_distribution == 'Ubuntu' and ansible_distribution_version == '14.04'
+    - name: Create symlinks for available services Ubuntu 14.04
+      file: src=/etc/monit/monitrc.d/{{item}} dest=/etc/monit/conf.d/{{item}} state=link
+      with_items:
+        - mysql
+        - nginx
+        - php5
+      when: ansible_distribution == 'Ubuntu' and ansible_distribution_version == '14.04'
+      become: true
+
+  - block:
+    - name: Remove monit configuration Ubuntu 16.04
+      file: state=absent path=/etc/monit/conf-available/{{item}}
+      with_items:
+          - mysql
+          - nginx
+          - php5
+          - php7
+      when: ansible_distribution == 'Ubuntu' and ansible_distribution_version == '16.04'
+      become: true
+    - name: ensure file exists Ubuntu 16.04
+      copy: content="" dest=/etc/monit/conf-available/{{item}} force=no group=root owner=root mode=0644
+      with_items:
+          - mysql
+          - nginx
+          - php5
+          - php7
+      when: ansible_distribution == 'Ubuntu' and ansible_distribution_version == '16.04'
+      become: true
+    - name: Configure mysql monit Ubuntu 16.04
+      blockinfile:
+        dest=/etc/monit/conf-available/mysql
+        content='check process mysqld with pidfile /run/mysqld/mysqld.pid\n
+                   \tstart program = "/usr/sbin/service mysql start" with timeout 10 seconds\n
+                   \tstop program  = "/usr/sbin/service mysql stop"\n
+                   \tif failed unixsocket /run/mysqld/mysqld.sock then restart'
+        marker=''
+      when: ansible_distribution == 'Ubuntu' and ansible_distribution_version == '16.04'
+      become: true
+    - name: Configure php5.X-fpm monit Ubuntu 16.04
+      blockinfile:
+        dest=/etc/monit/conf-available/php5
+        content='check process php-fpm5.6 with pidfile /run/php/php5.6-fpm.pid\n
+                   \tstart program = "/usr/sbin/service php5.6-fpm start" with timeout 10 seconds\n
+                   \tstop program  = "/usr/sbin/service php5.6-fpm stop"\n
+                   \tif failed unixsocket /run/php/php5.6-fpm.sock then restart'
+        marker=''
+      become: true
+      when: ansible_distribution == 'Ubuntu' and ansible_distribution_version == '16.04'
+    - name: Configure php7.X-fpm monit Ubuntu 16.04
+      blockinfile:
+        dest=/etc/monit/conf-available/php7
+        content='check process php-fpm7.1 with pidfile /run/php/php7.1-fpm.pid\n
+                 \tstart program = "/usr/sbin/service php7.1-fpm start" with timeout 10 seconds\n
+                 \tstop program  = "/usr/sbin/service php7.1-fpm stop"\n
+                 \tif failed unixsocket /run/php/php7.1-fpm.sock then restart'
+        marker=''
+      when: ansible_distribution == 'Ubuntu' and ansible_distribution_version == '16.04'
+      become: true
+    - name: Configure nginx monit Ubuntu 16.04
+      blockinfile:
+        dest=/etc/monit/conf-available/{{item}}
+        content='check process {{item}} with pidfile /run/{{item}}.pid\n
+                   \tstart program = "/usr/sbin/service {{item}} start" with timeout 10 seconds\n
+                   \tstop program  = "/usr/sbin/service {{item}} stop"\n'
+        marker=''
+      with_items:
+        - nginx
+      when: ansible_distribution == 'Ubuntu' and ansible_distribution_version == '16.04'
+      become: true
+    - name: Create symlinks for available services Ubuntu 16.04
+      file: src=/etc/monit/conf-available/{{item}} dest=/etc/monit/conf-enabled/{{item}} state=link
+      with_items:
+        - mysql
+        - nginx
+        - php5
+        - php7
+      when: ansible_distribution == 'Ubuntu' and ansible_distribution_version == '16.04'
+      become: true
+
+  - name: Restart Monit
+    service: name=monit state=restarted
+    become: true

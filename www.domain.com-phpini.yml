@@ -1,0 +1,15 @@
+  - name: config PHP
+    action: ini_file dest=/etc/php/{{phpver | quote}}/fpm/php.ini section=PHP option=max_execution_time value='1800'
+    become: true
+  - name: config PHP
+    action: ini_file dest=/etc/php/{{phpver | quote}}/fpm/php.ini section=PHP option=max_input_time value='1800'
+    become: true
+  - name: config PHP
+    action: ini_file dest=/etc/php/{{phpver | quote}}/fpm/php.ini section=PHP option=memory_limit value='1024M'
+    become: true
+  - name: config PHP
+    action: ini_file dest=/etc/php/{{phpver | quote}}/fpm/php.ini section=PHP option=post_max_size value='100M'
+    become: true
+  - name: config PHP
+    action: ini_file dest=/etc/php/{{phpver | quote}}/fpm/php.ini section=PHP option=upload_max_filesize value='100M'
+    become: true

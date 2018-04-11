@@ -1,0 +1,13 @@
+  - name: Add php5 repo for Ubuntu 16.04
+    apt_repository:
+      repo: 'ppa:ondrej/php'
+    become: true
+  - name: Install php repo for Ubuntu 16.04
+    apt: name=php{{phpver | quote}}-{{item}} state=installed update_cache=yes
+    with_items:
+      - curl
+      - gd
+      - fpm
+      - mysql
+      - soap
+    become: true

@@ -1,0 +1,13 @@
+  - name: Install base packages
+    apt: name=virtualenv state=installed
+    become: true
+  - name: Get certbot-auto
+    get_url: url=https://dl.eff.org/certbot-auto dest=/usr/sbin mode=a+x
+    become: true
+  - name: Run Certbot-auto
+    command: /usr/sbin/certbot-auto certonly --no-bootstrap --register-unsafely-without-email --agree-tos --nginx -d{{item}}
+    with_items: "{{ledomains}}"
+    become: true
+  - name: Generate
+    command: openssl dhparam -out /etc/ssl/certs/dhparam.pem 2048
+    become: true

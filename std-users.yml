@@ -1,0 +1,9 @@
+  - name: Add user ubuntu with a bash shell
+    user: name=ubuntu password= shell=/bin/bash groups=sudo generate_ssh_key=yes
+    become: true
+  - name: Set authorized key took from file
+    authorized_key: user=ubuntu state=present manage_dir=yes key="{{ lookup('file', '../template/{{sitename | quote}}.pub') }}"
+    become: true
+  - name: Allow 'ubuntu' user to have passwordless sudo
+    lineinfile: dest=/etc/sudoers insertafter=EOF line='ubuntu ALL=(ALL) NOPASSWD:ALL'
+    become: true

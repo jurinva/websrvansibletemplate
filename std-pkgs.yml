@@ -1,0 +1,11 @@
+  - name: Install base packages
+    apt: name={{item}} state=installed
+    with_items:
+      - fping
+      - mc
+      - ntp
+      - screen
+      - speedtest-cli
+      - tcpdump
+      - traceroute
+    become: true

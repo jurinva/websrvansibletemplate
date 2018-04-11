@@ -1,0 +1,8 @@
+  - name: Create backup dir
+    file: path={{siterootdir | quote}}/{{sitename | quote}} state=directory mode=0775
+    become: true
+  - name: Install nginx
+    apt: name={{item}} state=installed
+    with_items:
+      - nginx
+    sudo: yes
