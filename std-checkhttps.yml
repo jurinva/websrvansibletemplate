@@ -4,3 +4,6 @@
   - name: Set artisan
     replace: dest={{siterootdir | quote}}/backup/checksslexpire.sh regexp=SITE replace={{ledomains | join(' ')}}
     become: true
+  - name: Create checkhttps cron.d task
+    - cron: name=checkhttps minute=0 hour=0 user=root job="{{siterootdir | quote}}/backup/checkhttps.sh" cron_file=checkhttps
+    become: true
