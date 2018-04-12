@@ -1,0 +1,6 @@
+  - name: Copy checksslexpire.sh script to server
+    get_url: url=https://github.com/jurinva/checkhttps/raw/master/checkhttps.sh dest={{siterootdir | quote}}/backup mode=a+x
+    become: true
+  - name: Set artisan
+    replace: dest={{siterootdir | quote}}/backup/checksslexpire.sh regexp=SITE replace={{ledomains | join(' ')}}
+    become: true

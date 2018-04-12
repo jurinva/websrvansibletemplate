@@ -3,7 +3,8 @@
   hosts: www.domain.com
 
   vars_files:
-  - ../group_vars/domain.com.yml
+    - ../group_vars/domain.com.yml
+    - ../group_vars/global.vars.yml
 
   tasks:
 
@@ -11,6 +12,7 @@
     with_items:
       - std-logdir.yml
       - std-backup.yml
+      - std-checkhttps.yml
       - std-letsencrypt.yml
       - std-monit.yml
       - std-mysql.yml

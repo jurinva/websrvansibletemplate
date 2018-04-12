@@ -8,7 +8,7 @@ Currently script is able to:
 - Installing nginx, php-fpm, mysql, monit
 - Installing backup script and cron task
 - Has a role for php.ini
-- Has a Let'encypt role
+- Has a Let'sencypt role
 
 ## License
 
