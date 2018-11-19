@@ -1,0 +1,24 @@
+  - name: Install list of packages
+    apt: name=sphinxsearch state=installed
+    become: yes
+
+  - name: Configure sphinxsearch
+    file:
+      path=/etc/cron.daily/indexer.sh
+      state=touch
+      mode="u=rwx,g=rwx,o=rwx"
+    become: yes
+  - name: Shell script for cron
+    blockinfile:
+      dest=/etc/cron.daily/indexer.sh backup=yes
+      content="#!/bin/bash
+               indexer --rotate search1"
+    become: yes
+  - name: Sphinx START YES
+    replace: dest=/etc/default/sphinxsearch
+               regexp="START=no"
+               replace="START=yes"
+    become: yes
+  - name: Restart Sphinx after START YES
+    service: name=sphinxsearch state=restarted
+    become: yes
