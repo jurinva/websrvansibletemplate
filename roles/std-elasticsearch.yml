@@ -1,0 +1,36 @@
+  - name: Install jre
+    apt: name=default-jre state=installed
+    become: yes
+  - name: Add elasticsearch key
+    apt_key:
+      url: "https://artifacts.elastic.co/GPG-KEY-elasticsearch"
+      state: present
+    become: yes
+  - name: Add elasticsearch repo
+    apt_repository:
+      repo: deb https://artifacts.elastic.co/packages/{{elasticsearch_ver}}.x/apt stable main
+      state: present
+    become: yes
+  - name: Install elasticsearch
+    apt: name={{item}} state=installed update_cache=yes
+    with_items:
+      - apt-transport-https
+      - default-jre
+      - elasticsearch
+      - kibana
+      - elasticsearch-curator
+    become: yes
+#  - name: Run install X-Pack plugin
+#    command: /usr/share/{{item}}/bin/{{item}}-plugin install x-pack
+#    with_items:
+#      - elasticsearch
+#      - kibana
+#    when: {{elasticsearch_ver}} == 5
+#    become: yes
+  - name: Start Elasticsearch and Kibana
+    service: name={{item}} state=restarted enabled=yes
+    with_items:
+      - elasticsearch
+      - kibana
+    become: yes
+
